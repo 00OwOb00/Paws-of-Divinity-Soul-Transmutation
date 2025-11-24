@@ -310,14 +310,16 @@
 </div>
 
 <script>
-    // --- 音樂配置區 (請在此處填入你的 MP3 連結) ---
-    // 建議使用外部圖床或 GitHub Pages 託管音訊，或者暫時使用網路上免版權的埃及風格音樂連結
+    // --- 音樂配置區 (五種結局，五種音樂) ---
+    // 不是壓，寫程式也太難了吧，雖然都是Gemini寫的OwO
     const audioFiles = {
-        bgm: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", // 範例：神祕背景音樂
-        end_god: "https://cdn.pixabay.com/audio/2020/09/14/audio_a4b9190119.mp3", // 範例：莊嚴
-        end_modern: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3", // 範例：輕鬆
-        end_normal: "https://cdn.pixabay.com/audio/2024/09/06/audio_017d23a67d.mp3", // 範例：平靜
-        click: "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" // 範例：點擊聲
+        bgm: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", // 神祕背景音樂
+        end_god: "assets/audio/end_god.mp3",            // 芭斯特貓貓
+        end_modern: "assets/audio/end_modern.mp3",      // 穿越現代橘貓肥滋滋
+        end_priest: "assets/audio/end_spirit.mp3",      // 大祭司帥
+        end_stargazer: "assets/audio/end_wisdom.mp3",   // 書記官喵
+        end_guard: "assets/audio/end_courage.mp3",      // 勇士喵喵
+        click: "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" // 點擊
     };
 
     let bgmAudio = new Audio(audioFiles.bgm);
@@ -384,7 +386,7 @@
     const gameData = [
         {
             title: "第一回合：靈魂的質地",
-            story: "長老們看著你初來乍到的靈魂，決定先給予你一點基礎的形狀。",
+            story: "長老們看著你初來乍到的靈魂，決定先給予你一點基礎的本質。",
             options: [
                 { cat: "white", icon: "📜", name: "托特之筆", desc: "一支蘆葦筆，記錄著尼羅河每一次的漲潮與枯竭。", stats: { W: 2, S: 0, C: 0, M: 0 } },
                 { cat: "black", icon: "🌑", name: "月光石碎片", desc: "吸收了千年沙漠月光，摸起來冰涼且微微震動。", stats: { W: 0, S: 2, C: 0, M: 0 } },
@@ -411,7 +413,7 @@
         },
         {
             title: "第四回合：面對衝突",
-            story: "當危險（或一隻討厭的大狗）逼近時，你的本能是什麼？",
+            story: "當危險逼近時，你的本能是什麼？",
             options: [
                 { cat: "white", icon: "♟️", name: "塞尼特棋盤", desc: "既然打不過，不如邀請對方坐下來下一盤棋？", stats: { W: 3, S: 0, C: 0, M: 0 } },
                 { cat: "black", icon: "👁️", name: "荷魯斯之眼", desc: "看透恐懼的本質，有時候危險只是內心的幻影。", stats: { W: 0, S: 3, C: 0, M: 0 } },
@@ -538,51 +540,63 @@
         document.getElementById('resultArea').style.display = 'block';
     }
 
+   // 計算結局邏輯 (五種獨立結局)
     function calculateEnding() {
         const { W, S, C, M } = scores;
         
+        // 1. 現代結局 (優先級最高)
         if (M >= 5) {
             return {
                 title: "穿越時空的家貓",
                 icon: "🛋️",
-                music: audioFiles.end_modern,
+                imagePath: "assets/images/modern.png",
+                music: "assets/audio/end_modern.mp3",
                 desc: "你選擇了安逸，這不是軟弱，而是懂得了珍惜微小的幸福。",
                 advice: "請記得，你曬的每一次太陽，都是幾億公里外那顆恆星專門為你傳送的溫暖。在這個匆忙的現代世界裡，你是唯一被允許慢下來的鐘擺。"
             };
         }
+
+        // 2. 成神結局 (數值均衡且高)
         if (W >= 5 && S >= 5 && C >= 5) {
             return {
                 title: "芭斯特女神的化身",
                 icon: "👑",
-                music: audioFiles.end_god,
+                imagePath: "assets/images/cat.png",
+                music: "assets/audio/end_god.mp3",
                 desc: "你的靈魂達到了完美的平衡。智慧、靈性與勇氣在你身上交織成金色的光輝。",
-                advice: "神性並非高高在上，而是對世間萬物深刻的理解。偶爾推倒一兩個花瓶沒關係，那是你給予凡人的『神諭』。"
+                advice: "神性並非高高在上，而是對世間萬物深刻的理解。偶爾推倒一兩個花瓶沒關係，那是你給予凡人的『神諭』——告訴他們，物質終將破碎，唯有靈魂永恆。"
             };
         }
+
+        // 3. 一般結局 (根據最高屬性，W, S, C 三者擇一)
         const maxStat = Math.max(W, S, C);
+        
         if (maxStat === W) {
             return {
                 title: "神廟大祭司 / 圖書館守護者",
                 icon: "📜",
-                music: audioFiles.end_normal,
-                desc: "你選擇了智慧的道路。在尼羅河畔的圖書館深處，你是靜默的觀察者。",
-                advice: "聰明如你，應該知道『毫無意義的發呆』也是生命中重要的學問。並不是所有的問題都需要答案。"
+                imagePath: "assets/images/goddess.png", 
+                music: "assets/audio/end_wisdom.mp3",          
+                desc: "你選擇了智慧的道路。在尼羅河畔的圖書館深處，你是靜默的觀察者，眼神中藏著千年的秘密。",
+                advice: "聰明如你，應該知道『毫無意義的發呆』也是生命中重要的學問。並不是所有的問題都需要答案，有時候，看著塵埃在光束中飛舞，就是最好的真理。"
             };
         } else if (maxStat === S) {
             return {
                 title: "尼羅河的觀星者",
                 icon: "🔮",
-                music: audioFiles.end_normal,
+                imagePath: "assets/images/priest.png", 
+                music: "assets/audio/end_spirit.mp3",           
                 desc: "你的靈魂與另一個世界緊密相連。你喜歡在深夜獨自坐在神殿頂端，與月亮對話。",
                 advice: "孤獨不是被遺棄，而是神明給予你獨處的特權，讓你有時間去整理那些散落在星河裡的思緒。"
             };
-        } else {
+        } else { // maxStat === C
             return {
                 title: "法老的御前侍衛",
                 icon: "⚔️",
-                music: audioFiles.end_normal,
+                imagePath: "assets/images/guard.png", 
+                music: "assets/audio/end_courage.mp3",           
                 desc: "勇氣是你靈魂的底色。你是忠誠與力量的象徵，任何試圖侵犯領地的敵人都會嘗到你的利爪。",
-                advice: "其實，收起爪子並不代表投降。偶爾露出柔軟的肚子，是比戰鬥更強大的信任。"
+                advice: "其實，收起爪子並不代表投降。偶爾露出柔軟的肚子，是比戰鬥更強大的信任。願你在守護別人的同時，也能找到一個願意守護你睡眠的人。"
             };
         }
     }
@@ -606,3 +620,4 @@
 
 </body>
 </html>
+
