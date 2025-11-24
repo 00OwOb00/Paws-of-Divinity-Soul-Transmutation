@@ -14,7 +14,7 @@
             --gold: #ffd700;
             --border-pixel: 4px; /* 模擬像素邊框 */
         }
-
+        
         body {
             font-family: 'VT323', monospace; /* 像素字體 */
             background-color: var(--bg-color);
@@ -312,13 +312,14 @@
 
 <script>
     // --- 音樂配置區 (五種結局，五種音樂) ---
+    //寫成是為什麼這麼難，雖然都是Gemini寫的OwO
     const audioFiles = {
         bgm: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", // 神祕背景音樂
         end_god: "assets/audio/end_god.mp3",          // 芭斯特貓貓
         end_modern: "assets/audio/end_modern.mp3",    // 穿越現代橘貓肥滋滋
-        end_priest: "assets/audio/end_priest.mp3",    // 大祭司 (W)
-        end_stargazer: "assets/audio/end_stargazer.mp3", // 觀星者 (S)
-        end_guard: "assets/audio/end_guard.mp3",      // 御前侍衛 (C)
+        end_priest: "assets/audio/end_priest.mp3",    // 氣質紙莎草喵喵
+        end_stargazer: "assets/audio/end_stargazer.mp3", // 帥氣的喵喵
+        end_guard: "assets/audio/end_guard.mp3",      // 就，壯
         click: "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" // 點擊
     };
 
@@ -382,6 +383,7 @@
     animateParticles();
 
     // --- 遊戲邏輯 (已修正分數以利達成女神結局 W>=5, S>=5, C>=5) ---
+    //果然一開始的程式碼，數學就很不對勁，設計一個完全不會達到隱藏結局的數值，哼哼
     const gameData = [
         {
             title: "第一回合：靈魂的質地",
@@ -440,10 +442,10 @@
 
     function startGame() {
         document.getElementById('startOverlay').style.display = 'none';
-        // 修正 2：移除不必要的 opacity 設置，確保顯示
         document.getElementById('mainContainer').style.opacity = 1; 
         
         // 播放背景音樂
+        //我們是孤獨的總和，所以相聚了(唱，音樂其實不是這個
         isMusicPlaying = true;
         bgmAudio.play().catch(e => console.log("Audio play blocked (User interaction needed)"));
         
@@ -611,7 +613,7 @@
                 imagePath: "assets/images/priest.png", 
                 music: audioFiles.end_stargazer,           
                 desc: "你的靈魂與另一個世界緊密相連。你喜歡在深夜獨自坐在神殿頂端，與月亮對話。",
-                advice: "孤獨不是被遺棄，而是神明給予你獨處的特權，讓你有時間去整理那些散落在星河裡的思緒。"
+                advice: "孤獨不是被遺棄，而是上天給予你獨處的特權，讓你有時間去整理那些散落在星河裡的思緒。"
             };
         } else { // maxStat === C
             return {
@@ -644,4 +646,5 @@
 
 </body>
 </html>
+
 
