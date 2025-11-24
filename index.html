@@ -311,14 +311,14 @@
 
 <script>
     // --- 音樂配置區 (五種結局，五種音樂) ---
-    // 不是壓，寫程式也太難了吧，雖然都是Gemini寫的OwO
+    // 已修正：刪除了重複的 const audioFiles = { 宣告
     const audioFiles = {
         bgm: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", // 神祕背景音樂
-        end_god: "assets/audio/end_god.mp3",           // 芭斯特貓貓
-        end_modern: "assets/audio/end_modern.mp3",     // 穿越現代橘貓肥滋滋
-        end_priest: "assets/audio/end_priest.mp3",     // 大祭司 (W)
+        end_god: "assets/audio/end_god.mp3",          // 芭斯特貓貓
+        end_modern: "assets/audio/end_modern.mp3",    // 穿越現代橘貓肥滋滋
+        end_priest: "assets/audio/end_priest.mp3",    // 大祭司 (W)
         end_stargazer: "assets/audio/end_stargazer.mp3", // 觀星者 (S)
-        end_guard: "assets/audio/end_guard.mp3",       // 御前侍衛 (C)
+        end_guard: "assets/audio/end_guard.mp3",      // 御前侍衛 (C)
         click: "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" // 點擊
     };
 
@@ -382,7 +382,6 @@
     animateParticles();
 
     // --- 遊戲邏輯 ---
-    // (資料結構保持不變，為了節省空間省略部分重複文字，請確保使用完整的 gameData)
     const gameData = [
         {
             title: "第一回合：靈魂的質地",
@@ -601,7 +600,7 @@
                 title: "神廟大祭司 / 圖書館守護者",
                 icon: "📜",
                 imagePath: "assets/images/goddess.png", 
-                music: audioFiles.end_priest,           
+                music: audioFiles.end_priest,          
                 desc: "你選擇了智慧的道路。在尼羅河畔的圖書館深處，你是靜默的觀察者，眼神中藏著千年的秘密。",
                 advice: "聰明如你，應該知道『毫無意義的發呆』也是生命中重要的學問。並不是所有的問題都需要答案，有時候，看著塵埃在光束中飛舞，就是最好的真理。"
             };
@@ -645,7 +644,3 @@
 
 </body>
 </html>
-
-
-
-
