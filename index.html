@@ -313,12 +313,13 @@
     // --- 音樂配置區 (五種結局，五種音樂) ---
     // 不是壓，寫程式也太難了吧，雖然都是Gemini寫的OwO
     const audioFiles = {
+        const audioFiles = {
         bgm: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", // 神祕背景音樂
-        end_god: "assets/audio/end_god.mp3",            // 芭斯特貓貓
-        end_modern: "assets/audio/end_modern.mp3",      // 穿越現代橘貓肥滋滋
-        end_priest: "assets/audio/end_spirit.mp3",      // 大祭司帥
-        end_stargazer: "assets/audio/end_wisdom.mp3",   // 書記官喵
-        end_guard: "assets/audio/end_courage.mp3",      // 勇士喵喵
+        end_god: "assets/audio/end_god.mp3",           // 芭斯特貓貓
+        end_modern: "assets/audio/end_modern.mp3",     // 穿越現代橘貓肥滋滋
+        end_priest: "assets/audio/end_priest.mp3",     // 大祭司 (W)
+        end_stargazer: "assets/audio/end_stargazer.mp3", // 觀星者 (S)
+        end_guard: "assets/audio/end_guard.mp3",       // 御前侍衛 (C)
         click: "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" // 點擊
     };
 
@@ -565,7 +566,7 @@
         document.getElementById('resultArea').style.display = 'block';
     }
 
-   // 計算結局邏輯 (五種獨立結局)
+   // 計算結局邏輯 (五種獨立結局 - 修正圖片路徑和音樂變數)
     function calculateEnding() {
         const { W, S, C, M } = scores;
         
@@ -574,8 +575,8 @@
             return {
                 title: "穿越時空的家貓",
                 icon: "🛋️",
-                imagePath: "assets/images/modern.png",
-                music: "assets/audio/end_modern.mp3",
+                imagePath: "assets/images/modern.png", 
+                music: audioFiles.end_modern,
                 desc: "你選擇了安逸，這不是軟弱，而是懂得了珍惜微小的幸福。",
                 advice: "請記得，你曬的每一次太陽，都是幾億公里外那顆恆星專門為你傳送的溫暖。在這個匆忙的現代世界裡，你是唯一被允許慢下來的鐘擺。"
             };
@@ -586,8 +587,8 @@
             return {
                 title: "芭斯特女神的化身",
                 icon: "👑",
-                imagePath: "assets/images/cat.png",
-                music: "assets/audio/end_god.mp3",
+                imagePath: "assets/images/goddess.png", 
+                music: audioFiles.end_god,
                 desc: "你的靈魂達到了完美的平衡。智慧、靈性與勇氣在你身上交織成金色的光輝。",
                 advice: "神性並非高高在上，而是對世間萬物深刻的理解。偶爾推倒一兩個花瓶沒關係，那是你給予凡人的『神諭』——告訴他們，物質終將破碎，唯有靈魂永恆。"
             };
@@ -601,7 +602,7 @@
                 title: "神廟大祭司 / 圖書館守護者",
                 icon: "📜",
                 imagePath: "assets/images/goddess.png", 
-                music: "assets/audio/end_wisdom.mp3",          
+                music: audioFiles.end_priest,           
                 desc: "你選擇了智慧的道路。在尼羅河畔的圖書館深處，你是靜默的觀察者，眼神中藏著千年的秘密。",
                 advice: "聰明如你，應該知道『毫無意義的發呆』也是生命中重要的學問。並不是所有的問題都需要答案，有時候，看著塵埃在光束中飛舞，就是最好的真理。"
             };
@@ -610,7 +611,7 @@
                 title: "尼羅河的觀星者",
                 icon: "🔮",
                 imagePath: "assets/images/priest.png", 
-                music: "assets/audio/end_spirit.mp3",           
+                music: audioFiles.end_stargazer,           
                 desc: "你的靈魂與另一個世界緊密相連。你喜歡在深夜獨自坐在神殿頂端，與月亮對話。",
                 advice: "孤獨不是被遺棄，而是神明給予你獨處的特權，讓你有時間去整理那些散落在星河裡的思緒。"
             };
@@ -619,7 +620,7 @@
                 title: "法老的御前侍衛",
                 icon: "⚔️",
                 imagePath: "assets/images/guard.png", 
-                music: "assets/audio/end_courage.mp3",           
+                music: audioFiles.end_guard,            
                 desc: "勇氣是你靈魂的底色。你是忠誠與力量的象徵，任何試圖侵犯領地的敵人都會嘗到你的利爪。",
                 advice: "其實，收起爪子並不代表投降。偶爾露出柔軟的肚子，是比戰鬥更強大的信任。願你在守護別人的同時，也能找到一個願意守護你睡眠的人。"
             };
@@ -645,5 +646,6 @@
 
 </body>
 </html>
+
 
 
