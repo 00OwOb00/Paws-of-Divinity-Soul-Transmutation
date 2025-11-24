@@ -381,13 +381,14 @@
     }
     animateParticles();
 
-    // --- 遊戲邏輯 ---
+    // --- 遊戲邏輯 (已修正分數以利達成女神結局 W>=5, S>=5, C>=5) ---
     const gameData = [
         {
             title: "第一回合：靈魂的質地",
             story: "長老們看著你初來乍到的靈魂，決定先給予你一點基礎的本質。",
             options: [
-                { cat: "white", icon: "📜", name: "托特之筆", desc: "一支蘆葦筆，記錄著尼羅河每一次的漲潮與枯竭。", stats: { W: 2, S: 0, C: 0, M: 0 } },
+                // 修正：W+2, S+1
+                { cat: "white", icon: "📜", name: "托特之筆", desc: "一支蘆葦筆，記錄著尼羅河每一次的漲潮與枯竭。", stats: { W: 2, S: 1, C: 0, M: 0 } }, 
                 { cat: "black", icon: "🌑", name: "月光石碎片", desc: "吸收了千年沙漠月光，摸起來冰涼且微微震動。", stats: { W: 0, S: 2, C: 0, M: 0 } },
                 { cat: "maine", icon: "🗡️", name: "黑曜石匕首", desc: "粗糙卻鋒利，散發著想要守護某人的熱度。", stats: { W: 0, S: 0, C: 2, M: 0 } }
             ]
@@ -397,7 +398,8 @@
             story: "你想透過貓的眼睛，看見什麼樣的世界？",
             options: [
                 { cat: "white", icon: "🗝️", name: "斯芬克斯的謎題", desc: "一個沒有鎖孔的黃金盒子，只有理解真相才能打開。", stats: { W: 2, S: 0, C: 0, M: 0 } },
-                { cat: "black", icon: "💨", name: "來世的薰香", desc: "燃燒時的煙霧會形成思念之人的輪廓，如夢似幻。", stats: { W: 0, S: 2, C: 0, M: 0 } },
+                // 修正：S+2, C+1
+                { cat: "black", icon: "💨", name: "來世的薰香", desc: "燃燒時的煙霧會形成思念之人的輪廓，如夢似幻。", stats: { W: 0, S: 2, C: 1, M: 0 } },
                 { cat: "maine", icon: "🛡️", name: "法老的戰車輪", desc: "即使已經斑駁，依然能聽見當年奔馳在黃沙上的風聲。", stats: { W: 0, S: 0, C: 2, M: 0 } }
             ]
         },
@@ -406,7 +408,8 @@
             story: "當你在午後小憩，你更偏愛哪一種溫度？",
             options: [
                 { cat: "white", icon: "🏛️", name: "圖書館的涼石板", desc: "安靜、陰涼，瀰漫著舊紙莎草的乾燥氣味。", stats: { W: 1, S: 1, C: 0, M: 0 } },
-                { cat: "black", icon: "🌌", name: "神殿頂端的星空", desc: "離神最近的地方，孤獨卻擁有整個宇宙。", stats: { W: 0, S: 2, C: 0, M: 0 } },
+                // 修正：S+3
+                { cat: "black", icon: "🌌", name: "神殿頂端的星空", desc: "離神最近的地方，孤獨卻擁有整個宇宙。", stats: { W: 0, S: 3, C: 0, M: 0 } },
                 { cat: "maine", icon: "🎪", name: "鬧市的喧囂角落", desc: "充滿了香料味和人聲，那是生機勃勃的氣息。", stats: { W: 0, S: 0, C: 1, M: 1 } }
             ]
         },
@@ -416,14 +419,16 @@
             options: [
                 { cat: "white", icon: "♟️", name: "塞尼特棋盤", desc: "既然打不過，不如邀請對方坐下來下一盤棋？", stats: { W: 3, S: 0, C: 0, M: 0 } },
                 { cat: "black", icon: "👁️", name: "荷魯斯之眼", desc: "看透恐懼的本質，有時候危險只是內心的幻影。", stats: { W: 0, S: 3, C: 0, M: 0 } },
-                { cat: "maine", icon: "🦁", name: "獅子的鬃毛", desc: "就算體型嬌小，氣勢也不能輸，炸毛是最後的尊嚴。", stats: { W: 0, S: 0, C: 3, M: 0 } }
+                // 修正：C+3, W+1
+                { cat: "maine", icon: "🦁", name: "獅子的鬃毛", desc: "就算體型嬌小，氣勢也不能輸，炸毛是最後的尊嚴。", stats: { W: 1, S: 0, C: 3, M: 0 } }
             ]
         },
         {
             title: "第五回合：命運的變數",
             story: "儀式即將完成，虛空中突然飄來了一些奇怪的東西...",
             options: [
-                { cat: "white", icon: "📐", name: "幾何學手稿", desc: "充滿了三角形與圓，這是建造金字塔的藍圖。", stats: { W: 2, S: 0, C: 0, M: 0 } },
+                // 修正：W+2, C+1
+                { cat: "white", icon: "📐", name: "幾何學手稿", desc: "充滿了三角形與圓，這是建造金字塔的藍圖。", stats: { W: 2, S: 0, C: 1, M: 0 } },
                 { cat: "black", icon: "📱", name: "發光的黑色方塊", desc: "它映照出你的臉，裡面藏著另一個世界。", stats: { W: 0, S: 0, C: 0, M: 5 } },
                 { cat: "maine", icon: "🥫", name: "奇怪的鐵罐頭", desc: "拉開拉環，裡面傳來了令人無法抗拒的香味。", stats: { W: 0, S: 0, C: 1, M: 5 } }
             ]
@@ -435,12 +440,11 @@
 
     function startGame() {
         document.getElementById('startOverlay').style.display = 'none';
-        // 因為已經移除 HTML 裡的 opacity: 0.1，這裡就只負責顯示它
+        // 修正 2：移除不必要的 opacity 設置，確保顯示
         document.getElementById('mainContainer').style.opacity = 1; 
         
         // 播放背景音樂
         isMusicPlaying = true;
-        // 為了確保瀏覽器不阻止播放，可以使用 .then().catch() 來處理 Promise
         bgmAudio.play().catch(e => console.log("Audio play blocked (User interaction needed)"));
         
         renderRound();
@@ -523,7 +527,7 @@
         document.getElementById('progressBar').style.width = '100%';
         document.querySelector('.subtitle').innerText = "【命運裁定】";
         
-        // 取得結局所有相關資料 (已在 calculateEnding 函式中定義)
+        // 取得結局所有相關資料
         const resultData = calculateEnding();
         
         // --- 1. 音樂處理：停止 BGM 並播放結局音樂 ---
@@ -531,15 +535,12 @@
 
         // 只有在用戶之前開啟了音樂，才嘗試播放結局音樂
         if (isMusicPlaying) {
-            // 初始化新的結局音樂 (使用 calculateEnding 傳來的專屬音樂路徑)
             currentEndAudio = new Audio(resultData.music);
             currentEndAudio.loop = true;
             currentEndAudio.volume = 0.5;
 
-            // 嘗試播放，並加入 Promise 錯誤處理，避免瀏覽器阻擋
             currentEndAudio.play().catch(e => {
                 console.error("Ending music playback failed (Browser Blocked):", e);
-                // 友善提示用戶，因為瀏覽器要求用戶必須點擊才能播放媒體
                 alert("音訊播放可能被瀏覽器政策阻擋了。請點擊右上角的🎵圖示手動開啟。");
             });
         }
@@ -547,12 +548,9 @@
         // --- 2. 圖片處理：設置背景圖 ---
         const resultImgElement = document.getElementById('resultImg');
         
-        // 清除原本的 Emoji (如果還有)
         resultImgElement.innerText = '';
         
-        // 設置圖片路徑和 CSS 屬性 (使用 calculateEnding 傳來的專屬圖片路徑)
         resultImgElement.style.backgroundImage = `url(${resultData.imagePath})`;
-        // 確保圖片能夠充滿容器，並保持像素風格的清晰
         resultImgElement.style.backgroundSize = 'cover'; 
         resultImgElement.style.backgroundRepeat = 'no-repeat';
         resultImgElement.style.backgroundPosition = 'center center';
@@ -566,11 +564,11 @@
         document.getElementById('resultArea').style.display = 'block';
     }
 
-   // 計算結局邏輯 (五種獨立結局 - 修正圖片路徑和音樂變數)
+   // 計算結局邏輯 (已確認五種結局可達成)
     function calculateEnding() {
         const { W, S, C, M } = scores;
         
-        // 1. 現代結局 (優先級最高)
+        // 1. 現代結局 (M >= 5) - 優先級最高
         if (M >= 5) {
             return {
                 title: "穿越時空的家貓",
@@ -582,7 +580,7 @@
             };
         }
 
-        // 2. 成神結局 (數值均衡且高)
+        // 2. 成神結局 (W >= 5, S >= 5, C >= 5) - 優先級第二
         if (W >= 5 && S >= 5 && C >= 5) {
             return {
                 title: "芭斯特女神的化身",
@@ -594,7 +592,7 @@
             };
         }
 
-        // 3. 一般結局 (根據最高屬性，W, S, C 三者擇一)
+        // 3. 一般結局 (根據最高屬性 W, S, C)
         const maxStat = Math.max(W, S, C);
         
         if (maxStat === W) {
@@ -646,4 +644,3 @@
 
 </body>
 </html>
-
