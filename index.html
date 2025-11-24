@@ -522,21 +522,46 @@
         document.getElementById('progressBar').style.width = '100%';
         document.querySelector('.subtitle').innerText = "【命運裁定】";
         
+        // 取得結局所有相關資料 (已在 calculateEnding 函式中定義)
         const resultData = calculateEnding();
         
-        // 音樂切換
+        // --- 1. 音樂處理：停止 BGM 並播放結局音樂 ---
         bgmAudio.pause();
+
+        // 只有在用戶之前開啟了音樂，才嘗試播放結局音樂
         if (isMusicPlaying) {
+            // 初始化新的結局音樂 (使用 calculateEnding 傳來的專屬音樂路徑)
             currentEndAudio = new Audio(resultData.music);
             currentEndAudio.loop = true;
-            currentEndAudio.play();
+            currentEndAudio.volume = 0.5;
+
+            // 嘗試播放，並加入 Promise 錯誤處理，避免瀏覽器阻擋
+            currentEndAudio.play().catch(e => {
+                console.error("Ending music playback failed (Browser Blocked):", e);
+                // 友善提示用戶，因為瀏覽器要求用戶必須點擊才能播放媒體
+                alert("音訊播放可能被瀏覽器政策阻擋了。請點擊右上角的🎵圖示手動開啟。");
+            });
         }
 
+        // --- 2. 圖片處理：設置背景圖 ---
+        const resultImgElement = document.getElementById('resultImg');
+        
+        // 清除原本的 Emoji (如果還有)
+        resultImgElement.innerText = '';
+        
+        // 設置圖片路徑和 CSS 屬性 (使用 calculateEnding 傳來的專屬圖片路徑)
+        resultImgElement.style.backgroundImage = `url(${resultData.imagePath})`;
+        // 確保圖片能夠充滿容器，並保持像素風格的清晰
+        resultImgElement.style.backgroundSize = 'cover'; 
+        resultImgElement.style.backgroundRepeat = 'no-repeat';
+        resultImgElement.style.backgroundPosition = 'center center';
+        
+        // --- 3. 文字內容處理 ---
         document.getElementById('resultTitle').innerText = resultData.title;
         document.getElementById('resultDesc').innerHTML = resultData.desc;
         document.getElementById('adviceText').innerText = resultData.advice;
-        document.getElementById('resultImg').innerText = resultData.icon; // 這裡可以用 prompt 生成的圖片替換
 
+        // 顯示結果區塊
         document.getElementById('resultArea').style.display = 'block';
     }
 
@@ -620,4 +645,5 @@
 
 </body>
 </html>
+
 
