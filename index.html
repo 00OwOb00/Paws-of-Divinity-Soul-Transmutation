@@ -282,7 +282,8 @@
     <button class="restart-btn" onclick="startGame()">點擊開始旅程</button>
 </div>
 
-<div class="container" id="mainContainer" style="opacity: 0.1;"> <h1>埃及喵神：靈魂鍊金術</h1>
+<div class="container" id="mainContainer"> 
+    <h1>埃及喵神：靈魂鍊金術</h1>
     <div class="subtitle">獻上你的選擇，重塑你的靈魂</div>
 
     <div class="progress-container">
@@ -435,11 +436,13 @@
 
     function startGame() {
         document.getElementById('startOverlay').style.display = 'none';
-        document.getElementById('mainContainer').style.opacity = 1;
+        // 因為已經移除 HTML 裡的 opacity: 0.1，這裡就只負責顯示它
+        document.getElementById('mainContainer').style.opacity = 1; 
         
         // 播放背景音樂
         isMusicPlaying = true;
-        bgmAudio.play().catch(e => console.log("Audio play blocked"));
+        // 為了確保瀏覽器不阻止播放，可以使用 .then().catch() 來處理 Promise
+        bgmAudio.play().catch(e => console.log("Audio play blocked (User interaction needed)"));
         
         renderRound();
     }
