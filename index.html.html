@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>埃及喵神：靈魂鍊金術 (Pixel Edition)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2013; /* 深褐色 */
+            --text-main: #f0e6d2; /* 羊皮紙色 */
+            --text-sub: #c5a059;
+            --gold: #ffd700;
+            --border-pixel: 4px; /* 模擬像素邊框 */
+        }
+
+        body {
+            font-family: 'VT323', monospace; /* 像素字體 */
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        /* 背景粒子畫布 */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif; /* 標題用古典字體 */
+            color: var(--gold);
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            text-shadow: 4px 4px 0px #000;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            color: var(--text-sub);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            border-bottom: 2px dashed var(--text-sub);
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        /* 像素風進度條 */
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: #111;
+            margin-bottom: 30px;
+            border: 4px solid #555;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gold);
+            width: 0%;
+            transition: width 0.3s steps(5); /* 步進式動畫更有像素感 */
+        }
+
+        .story-text {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            min-height: 80px;
+            text-shadow: 2px 2px 0 #000;
+            background: rgba(0,0,0,0.6);
+            padding: 10px;
+            border: 2px solid #555;
+        }
+
+        /* 像素風卡片 */
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            /* 像素邊框模擬 */
+            box-shadow: 
+                -4px 0 0 0 #000, 
+                4px 0 0 0 #000, 
+                0 -4px 0 0 #000, 
+                0 4px 0 0 #000;
+            margin: 4px; /* 為了邊框留空間 */
+            padding: 20px;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            display: flex;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            background: #3e2f1f;
+        }
+
+        /* 點擊選中的特效 */
+        .card.selected {
+            background: var(--gold);
+            color: #000;
+            animation: flash 0.5s infinite;
+        }
+        
+        .card.selected .card-desc {
+            color: #333;
+        }
+
+        @keyframes flash {
+            0% { background-color: var(--gold); }
+            50% { background-color: #fff; }
+            100% { background-color: var(--gold); }
+        }
+
+        .cat-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .card.selected .card-title {
+            color: #000;
+            text-shadow: none;
+        }
+
+        .card-desc {
+            font-size: 1.1rem;
+            color: #aaa;
+            line-height: 1.2;
+        }
+
+        /* 結果頁面 */
+        .result-area {
+            display: none;
+            animation: fadeIn 1s ease;
+            width: 100%;
+        }
+
+        .result-img-placeholder {
+            width: 200px;
+            height: 200px;
+            background: #000;
+            border: 4px solid var(--gold);
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            /* 這裡未來放生成的圖片 */
+            image-rendering: pixelated; 
+        }
+
+        .result-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--gold);
+            margin: 20px 0;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .advice-box {
+            background: #000;
+            border: 4px double var(--gold);
+            padding: 20px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .advice-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .restart-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            background: var(--gold);
+            border: 4px solid #000;
+            color: #000;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0 #fff;
+        }
+
+        .restart-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #fff;
+        }
+
+        /* 音樂控制按鈕 */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            cursor: pointer;
+            font-size: 1.5rem;
+            background: rgba(0,0,0,0.5);
+            padding: 5px;
+            border: 2px solid var(--gold);
+            border-radius: 5px;
+        }
+
+        /* 開始按鈕遮罩 */
+        #startOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="particleCanvas"></canvas>
+
+<div class="music-control" onclick="toggleMusic()">🎵</div>
+
+<div id="startOverlay">
+    <h1 style="font-size: 3rem; margin-bottom: 20px;">埃及喵神</h1>
+    <button class="restart-btn" onclick="startGame()">點擊開始旅程</button>
+</div>
+
+<div class="container" id="mainContainer" style="opacity: 0.1;"> <h1>埃及喵神：靈魂鍊金術</h1>
+    <div class="subtitle">獻上你的選擇，重塑你的靈魂</div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="game-area" id="gameArea">
+        <div class="story-text" id="storyText">...</div>
+        <div class="cards-container" id="cardsContainer">
+            </div>
+    </div>
+
+    <div class="result-area" id="resultArea">
+        <div class="result-img-placeholder" id="resultImg">🐱</div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-desc" id="resultDesc"></div>
+        
+        <div class="advice-box">
+            <div style="color: var(--gold); margin-bottom: 10px;">✦ 貓神的低語 ✦</div>
+            <div class="advice-text" id="adviceText"></div>
+        </div>
+
+        <button class="restart-btn" onclick="restartGame()">再次轉生</button>
+    </div>
+</div>
+
+<script>
+    // --- 音樂配置區 (請在此處填入你的 MP3 連結) ---
+    // 建議使用外部圖床或 GitHub Pages 託管音訊，或者暫時使用網路上免版權的埃及風格音樂連結
+    const audioFiles = {
+        bgm: "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", // 範例：神祕背景音樂
+        end_god: "https://cdn.pixabay.com/audio/2020/09/14/audio_a4b9190119.mp3", // 範例：莊嚴
+        end_modern: "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3", // 範例：輕鬆
+        end_normal: "https://cdn.pixabay.com/audio/2024/09/06/audio_017d23a67d.mp3", // 範例：平靜
+        click: "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" // 範例：點擊聲
+    };
+
+    let bgmAudio = new Audio(audioFiles.bgm);
+    bgmAudio.loop = true;
+    bgmAudio.volume = 0.5;
+
+    let currentEndAudio = null;
+    let clickSound = new Audio(audioFiles.click);
+    let isMusicPlaying = false;
+
+    // --- 粒子特效腳本 ---
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height - canvas.height;
+            this.size = Math.random() * 4 + 2; // 方塊大小
+            this.speedY = Math.random() * 2 + 1;
+            this.opacity = Math.random() * 0.5 + 0.2;
+        }
+        update() {
+            this.y += this.speedY;
+            if (this.y > canvas.height) {
+                this.y = -10;
+                this.x = Math.random() * canvas.width;
+            }
+        }
+        draw() {
+            ctx.fillStyle = `rgba(255, 215, 0, ${this.opacity})`; // 金色
+            ctx.fillRect(this.x, this.y, this.size, this.size); // 畫方形像素
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < 50; i++) { // 粒子數量
+            particles.push(new Particle());
+        }
+    }
+    initParticles();
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // --- 遊戲邏輯 ---
+    // (資料結構保持不變，為了節省空間省略部分重複文字，請確保使用完整的 gameData)
+    const gameData = [
+        {
+            title: "第一回合：靈魂的質地",
+            story: "長老們看著你初來乍到的靈魂，決定先給予你一點基礎的形狀。",
+            options: [
+                { cat: "white", icon: "📜", name: "托特之筆", desc: "一支蘆葦筆，記錄著尼羅河每一次的漲潮與枯竭。", stats: { W: 2, S: 0, C: 0, M: 0 } },
+                { cat: "black", icon: "🌑", name: "月光石碎片", desc: "吸收了千年沙漠月光，摸起來冰涼且微微震動。", stats: { W: 0, S: 2, C: 0, M: 0 } },
+                { cat: "maine", icon: "🗡️", name: "黑曜石匕首", desc: "粗糙卻鋒利，散發著想要守護某人的熱度。", stats: { W: 0, S: 0, C: 2, M: 0 } }
+            ]
+        },
+        {
+            title: "第二回合：眼中的渴望",
+            story: "你想透過貓的眼睛，看見什麼樣的世界？",
+            options: [
+                { cat: "white", icon: "🗝️", name: "斯芬克斯的謎題", desc: "一個沒有鎖孔的黃金盒子，只有理解真相才能打開。", stats: { W: 2, S: 0, C: 0, M: 0 } },
+                { cat: "black", icon: "💨", name: "來世的薰香", desc: "燃燒時的煙霧會形成思念之人的輪廓，如夢似幻。", stats: { W: 0, S: 2, C: 0, M: 0 } },
+                { cat: "maine", icon: "🛡️", name: "法老的戰車輪", desc: "即使已經斑駁，依然能聽見當年奔馳在黃沙上的風聲。", stats: { W: 0, S: 0, C: 2, M: 0 } }
+            ]
+        },
+        {
+            title: "第三回合：棲息之所",
+            story: "當你在午後小憩，你更偏愛哪一種溫度？",
+            options: [
+                { cat: "white", icon: "🏛️", name: "圖書館的涼石板", desc: "安靜、陰涼，瀰漫著舊紙莎草的乾燥氣味。", stats: { W: 1, S: 1, C: 0, M: 0 } },
+                { cat: "black", icon: "🌌", name: "神殿頂端的星空", desc: "離神最近的地方，孤獨卻擁有整個宇宙。", stats: { W: 0, S: 2, C: 0, M: 0 } },
+                { cat: "maine", icon: "🎪", name: "鬧市的喧囂角落", desc: "充滿了香料味和人聲，那是生機勃勃的氣息。", stats: { W: 0, S: 0, C: 1, M: 1 } }
+            ]
+        },
+        {
+            title: "第四回合：面對衝突",
+            story: "當危險（或一隻討厭的大狗）逼近時，你的本能是什麼？",
+            options: [
+                { cat: "white", icon: "♟️", name: "塞尼特棋盤", desc: "既然打不過，不如邀請對方坐下來下一盤棋？", stats: { W: 3, S: 0, C: 0, M: 0 } },
+                { cat: "black", icon: "👁️", name: "荷魯斯之眼", desc: "看透恐懼的本質，有時候危險只是內心的幻影。", stats: { W: 0, S: 3, C: 0, M: 0 } },
+                { cat: "maine", icon: "🦁", name: "獅子的鬃毛", desc: "就算體型嬌小，氣勢也不能輸，炸毛是最後的尊嚴。", stats: { W: 0, S: 0, C: 3, M: 0 } }
+            ]
+        },
+        {
+            title: "第五回合：命運的變數",
+            story: "儀式即將完成，虛空中突然飄來了一些奇怪的東西...",
+            options: [
+                { cat: "white", icon: "📐", name: "幾何學手稿", desc: "充滿了三角形與圓，這是建造金字塔的藍圖。", stats: { W: 2, S: 0, C: 0, M: 0 } },
+                { cat: "black", icon: "📱", name: "發光的黑色方塊", desc: "它映照出你的臉，裡面藏著另一個世界。", stats: { W: 0, S: 0, C: 0, M: 5 } },
+                { cat: "maine", icon: "🥫", name: "奇怪的鐵罐頭", desc: "拉開拉環，裡面傳來了令人無法抗拒的香味。", stats: { W: 0, S: 0, C: 1, M: 5 } }
+            ]
+        }
+    ];
+
+    let currentRound = 0;
+    let scores = { W: 0, S: 0, C: 0, M: 0 };
+
+    function startGame() {
+        document.getElementById('startOverlay').style.display = 'none';
+        document.getElementById('mainContainer').style.opacity = 1;
+        
+        // 播放背景音樂
+        isMusicPlaying = true;
+        bgmAudio.play().catch(e => console.log("Audio play blocked"));
+        
+        renderRound();
+    }
+
+    function toggleMusic() {
+        if (isMusicPlaying) {
+            bgmAudio.pause();
+            if(currentEndAudio) currentEndAudio.pause();
+            isMusicPlaying = false;
+        } else {
+            if(document.getElementById('resultArea').style.display === 'block' && currentEndAudio) {
+                currentEndAudio.play();
+            } else {
+                bgmAudio.play();
+            }
+            isMusicPlaying = true;
+        }
+    }
+
+    function renderRound() {
+        const data = gameData[currentRound];
+        document.getElementById('progressBar').style.width = `${(currentRound / 5) * 100}%`;
+        document.querySelector('.subtitle').innerText = data.title;
+        document.getElementById('storyText').innerText = data.story;
+
+        const cardsContainer = document.getElementById('cardsContainer');
+        cardsContainer.innerHTML = '';
+        
+        data.options.forEach((opt) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            // 添加點擊事件
+            card.addEventListener('click', function() {
+                // 播放點擊音效
+                clickSound.currentTime = 0;
+                clickSound.play();
+                
+                // 視覺反饋
+                // 移除其他卡的點擊事件防止重複點擊
+                const allCards = document.querySelectorAll('.card');
+                allCards.forEach(c => c.style.pointerEvents = 'none');
+                
+                // 加亮當前卡片
+                this.classList.add('selected');
+
+                // 延遲後進入下一關
+                setTimeout(() => {
+                    handleChoice(opt.stats);
+                }, 600);
+            });
+
+            card.innerHTML = `
+                <div class="cat-icon">${opt.icon}</div>
+                <div class="card-content">
+                    <div class="card-title">${opt.name}</div>
+                    <div class="card-desc">${opt.desc}</div>
+                </div>
+            `;
+            cardsContainer.appendChild(card);
+        });
+    }
+
+    function handleChoice(stats) {
+        scores.W += stats.W;
+        scores.S += stats.S;
+        scores.C += stats.C;
+        scores.M += stats.M;
+        currentRound++;
+
+        if (currentRound < 5) {
+            renderRound();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('gameArea').style.display = 'none';
+        document.getElementById('progressBar').style.width = '100%';
+        document.querySelector('.subtitle').innerText = "【命運裁定】";
+        
+        const resultData = calculateEnding();
+        
+        // 音樂切換
+        bgmAudio.pause();
+        if (isMusicPlaying) {
+            currentEndAudio = new Audio(resultData.music);
+            currentEndAudio.loop = true;
+            currentEndAudio.play();
+        }
+
+        document.getElementById('resultTitle').innerText = resultData.title;
+        document.getElementById('resultDesc').innerHTML = resultData.desc;
+        document.getElementById('adviceText').innerText = resultData.advice;
+        document.getElementById('resultImg').innerText = resultData.icon; // 這裡可以用 prompt 生成的圖片替換
+
+        document.getElementById('resultArea').style.display = 'block';
+    }
+
+    function calculateEnding() {
+        const { W, S, C, M } = scores;
+        
+        if (M >= 5) {
+            return {
+                title: "穿越時空的家貓",
+                icon: "🛋️",
+                music: audioFiles.end_modern,
+                desc: "你選擇了安逸，這不是軟弱，而是懂得了珍惜微小的幸福。",
+                advice: "請記得，你曬的每一次太陽，都是幾億公里外那顆恆星專門為你傳送的溫暖。在這個匆忙的現代世界裡，你是唯一被允許慢下來的鐘擺。"
+            };
+        }
+        if (W >= 5 && S >= 5 && C >= 5) {
+            return {
+                title: "芭斯特女神的化身",
+                icon: "👑",
+                music: audioFiles.end_god,
+                desc: "你的靈魂達到了完美的平衡。智慧、靈性與勇氣在你身上交織成金色的光輝。",
+                advice: "神性並非高高在上，而是對世間萬物深刻的理解。偶爾推倒一兩個花瓶沒關係，那是你給予凡人的『神諭』。"
+            };
+        }
+        const maxStat = Math.max(W, S, C);
+        if (maxStat === W) {
+            return {
+                title: "神廟大祭司 / 圖書館守護者",
+                icon: "📜",
+                music: audioFiles.end_normal,
+                desc: "你選擇了智慧的道路。在尼羅河畔的圖書館深處，你是靜默的觀察者。",
+                advice: "聰明如你，應該知道『毫無意義的發呆』也是生命中重要的學問。並不是所有的問題都需要答案。"
+            };
+        } else if (maxStat === S) {
+            return {
+                title: "尼羅河的觀星者",
+                icon: "🔮",
+                music: audioFiles.end_normal,
+                desc: "你的靈魂與另一個世界緊密相連。你喜歡在深夜獨自坐在神殿頂端，與月亮對話。",
+                advice: "孤獨不是被遺棄，而是神明給予你獨處的特權，讓你有時間去整理那些散落在星河裡的思緒。"
+            };
+        } else {
+            return {
+                title: "法老的御前侍衛",
+                icon: "⚔️",
+                music: audioFiles.end_normal,
+                desc: "勇氣是你靈魂的底色。你是忠誠與力量的象徵，任何試圖侵犯領地的敵人都會嘗到你的利爪。",
+                advice: "其實，收起爪子並不代表投降。偶爾露出柔軟的肚子，是比戰鬥更強大的信任。"
+            };
+        }
+    }
+
+    function restartGame() {
+        if(currentEndAudio) {
+            currentEndAudio.pause();
+            currentEndAudio.currentTime = 0;
+        }
+        
+        currentRound = 0;
+        scores = { W: 0, S: 0, C: 0, M: 0 };
+        document.getElementById('resultArea').style.display = 'none';
+        document.getElementById('gameArea').style.display = 'block';
+        
+        if(isMusicPlaying) bgmAudio.play();
+        
+        renderRound();
+    }
+</script>
+
+</body>
+</html>
